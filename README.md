@@ -18,3 +18,7 @@ We have chosen Diesel to easily abstract from the database as it seems popular f
 cargo install
 cargo run
 ```
+
+## Run with auto-reload
+
+`systemfd --no-pid -s http::3000 -- cargo watch -x run`
