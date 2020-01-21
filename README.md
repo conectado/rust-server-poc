@@ -12,13 +12,26 @@ We have chosen Actix due to its ability to work on stable and its simplicity and
 
 We have chosen Diesel to easily abstract from the database as it seems popular for this job
 
+## Prerequisities
+* Git
+
+## Setup this project
+```bash
+git clone git@github.com:conectado/rust-server-poc.git # Clone repo
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh # Install rustup
+sudo pacman -S postgresql # Install posgres
+cargo install diesel_cli # Install diesel cli for DB
+diesel setup # Setup DB and tables
+cargo install # Install dependencies
+```
+
 ## Run this project
 
-```
-cargo install
+```bash
 cargo run
 ```
 
 ## Run with auto-reload
-
-`systemfd --no-pid -s http::3000 -- cargo watch -x run`
+```bash
+systemfd --no-pid -s http::3000 -- cargo watch -x run
+```
