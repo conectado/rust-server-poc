@@ -20,6 +20,10 @@ We have chosen Diesel to easily abstract from the database as it seems popular f
 git clone git@github.com:conectado/rust-server-poc.git # Clone repo
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh # Install rustup
 sudo pacman -S postgresql # Install posgres
+sudo -iu postgres # Login into postgres user
+initdb -D /var/lib/postgres/data # Initialize DB cluster
+createuser -s diesel # Create passwordless superuser diesel
+exit # Go back to user's shell
 cargo install diesel_cli # Install diesel cli for DB
 diesel setup # Setup DB and tables
 cargo install # Install dependencies
