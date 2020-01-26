@@ -1,16 +1,18 @@
 #[macro_use]
 extern crate diesel;
-use actix_web::{get, middleware, App, HttpResponse, HttpServer, Responder};
+use crate::handlers::{login, register, whoami};
+use actix_identity::{CookieIdentityPolicy, IdentityService};
+use actix_web::{get, middleware, web, App, HttpResponse, HttpServer, Responder};
 use diesel::prelude::*;
 use diesel::r2d2::ConnectionManager;
 use dotenv::dotenv;
 use listenfd::ListenFd;
+use rand::{thread_rng, Rng};
 
 mod handlers;
+mod models;
 mod password_manager;
-mod requests;
 mod schema;
-use crate::handlers::{login, register};
 
 pub type DBType = PgConnection;
 pub type Pool = r2d2::Pool<ConnectionManager<DBType>>;
@@ -36,13 +38,24 @@ async fn main() -> std::io::Result<()> {
     let mut listenfd = ListenFd::from_env();
 
     let db_pool = get_connection_pool();
+    let mut arr = [0u8; 32];
+    thread_rng().fill(&mut arr);
     let mut server = HttpServer::new(move || {
         App::new()
             .data(db_pool.clone())
+            .wrap(IdentityService::new(
+                CookieIdentityPolicy::new(&arr)
+                    .name("server-auth")
+                    .secure(false),
+            ))
             .wrap(middleware::Logger::default())
             .service(index)
-            .service(register)
-            .service(login)
+            .service(
+                web::scope("/user")
+                    .service(register)
+                    .service(login)
+                    .service(whoami),
+            )
     });
 
     server = if let Some(l) = listenfd.take_tcp_listener(0).unwrap() {

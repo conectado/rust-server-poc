@@ -36,6 +36,56 @@ cargo run
 ```
 
 ## Run with auto-reload
+
 ```bash
 systemfd --no-pid -s http::3000 -- cargo watch -x run
+```
+
+## Endpoints
+
+* /
+```
+GET /
+```
+
+Responds `Ok`
+
+* /user/register
+```
+POST /user/register
+{
+  "username": "<desired_username>"
+  "password": "<desired_password>"
+}
+```
+
+  * <desired_username>: username of the new user
+  * <desired_password>: password of the new user
+**NOTE*: Repeated usernames are not handled(yet)
+
+* /user/login
+```
+POST /user/register
+{
+  "username": "<username_of_login>"
+  "password": "<password_of_login>"
+}
+```
+
+  * <username_of_login>: username of the login in user
+  * <password_of_login>: password of the login in user
+**NOTE**: User info stored is username in a cookie login
+
+* /user/whoami
+```
+GET /user/whoami
+```
+
+Responds with the current logged in session username
+
+## Tests
+
+Only manual tests can be found for now:
+```bash
+./src/tests.sh
 ```
